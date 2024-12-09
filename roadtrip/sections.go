@@ -2,6 +2,15 @@ package roadtrip
 
 // Road Trip Data File version 1500,en
 
+var HEADERS = []string{
+	"FUEL RECORDS",
+	"MAINTENANCE RECORDS",
+	"ROAD TRIPS",
+	"VEHICLE",
+	"TIRE LOG",
+	"VALUATIONS",
+}
+
 // FUEL RECORDS
 type Fuel struct {
 	Odometer     int     `csv:"Odometer (mi)"`
@@ -74,24 +83,24 @@ type RoadTrip struct {
 
 // VEHICLE
 type Vehicle struct {
-	Name                string `csv:"Name"`
-	Odometer            string `csv:"Odometer"`
-	Units               string `csv:"Units"`
-	Notes               string `csv:"Notes"`
-	TankCapacity        string `csv:"Tank Capacity"`
-	Tank1Units          string `csv:"Tank Units"`
-	HomeCurrency        string `csv:"Home Currency"`
-	Flags               string `csv:"Flags"`
-	IconID              string `csv:"IconID"`
-	FuelUnits           string `csv:"FuelUnits"`
-	TripCompUnits       string `csv:"TripComp Units"`
-	TripCompSpeed       string `csv:"TripComp Speed"`
-	TripCompTemperature string `csv:"TripComp Temperature"`
-	TripCompTimeEnabled string `csv:"TripComp Time Enabled"`
-	OdometerShift       string `csv:"Odometer Shift"`
-	Tank1Type           string `csv:"Tank 1 Type"`
-	Tank2Type           string `csv:"Tank 2 Type"`
-	Tank2Units          string `csv:"Tank 2 Units"`
+	Name                string  `csv:"Name"`
+	Odometer            string  `csv:"Odometer"`
+	Units               string  `csv:"Units"`
+	Notes               string  `csv:"Notes"`
+	TankCapacity        float64 `csv:"Tank Capacity"`
+	Tank1Units          string  `csv:"Tank Units"`
+	HomeCurrency        string  `csv:"Home Currency"`
+	Flags               string  `csv:"Flags"`
+	IconID              string  `csv:"IconID"`
+	FuelUnits           string  `csv:"FuelUnits"`
+	TripCompUnits       string  `csv:"TripComp Units"`
+	TripCompSpeed       string  `csv:"TripComp Speed"`
+	TripCompTemperature string  `csv:"TripComp Temperature"`
+	TripCompTimeEnabled string  `csv:"TripComp Time Enabled"`
+	OdometerShift       string  `csv:"Odometer Shift"`
+	Tank1Type           string  `csv:"Tank 1 Type,optional"`
+	Tank2Type           string  `csv:"Tank 2 Type,optional"`
+	Tank2Units          string  `csv:"Tank 2 Units,optional"`
 }
 
 // TIRE LOG
