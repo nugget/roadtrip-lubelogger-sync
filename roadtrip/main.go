@@ -31,7 +31,15 @@ func (rt *CSV) LoadFile(filename string) error {
 	}
 
 	rt.Filename = filename
-	rt.Raw = buf
+
+	if true {
+		// Remove erroneous header fields for VEHICLE section
+		// per Darren Stone 9-Dec-2024 via email
+		omitHeaders := []byte(",Tank 1 Type,Tank 2 Type,Tank 2 Units")
+		rt.Raw = bytes.Replace(buf, omitHeaders, []byte{}, 1)
+	} else {
+		rt.Raw = buf
+	}
 
 	if err := rt.Parse("FUEL RECORDS", &rt.FuelRecords); err != nil {
 		return fmt.Errorf("FuelRecords: %w", err)
@@ -45,9 +53,9 @@ func (rt *CSV) LoadFile(filename string) error {
 		return fmt.Errorf("RoadTrips: %w", err)
 	}
 
-	// if err := rt.Parse("VEHICLE", &rt.Vehicle); err != nil {
-	// 	return fmt.Errorf("Vehicle: %w", err)
-	// }
+	if err := rt.Parse("VEHICLE", &rt.Vehicle); err != nil {
+		return fmt.Errorf("Vehicle: %w", err)
+	}
 
 	if err := rt.Parse("TIRE LOG", &rt.TireLogs); err != nil {
 		return fmt.Errorf("TireLogs: %w", err)
@@ -73,12 +81,19 @@ func (rt *CSV) LoadFile(filename string) error {
 }
 
 func (rt *CSV) Section(sectionHeader string) (outbuf []byte) {
+	log.WithFields(log.Fields{
+		"sectionHeader": sectionHeader,
+	}).Trace("Fetching Section from Raw")
+
 	sectionStart := make(map[string]int)
 
 	for index, element := range HEADERS {
 		i := bytes.Index(rt.Raw, []byte(HEADERS[index]))
 		sectionStart[element] = i
-		fmt.Printf("Section %s starts at position %d\n", element, i)
+		log.WithFields(log.Fields{
+			"element":      element,
+			"sectionStart": i,
+		}).Trace("Section Start detected")
 	}
 
 	startPosition := sectionStart[sectionHeader]
@@ -90,14 +105,17 @@ func (rt *CSV) Section(sectionHeader string) (outbuf []byte) {
 		}
 	}
 
-	fmt.Printf("Section %s: %6d - %6d\n", sectionHeader, startPosition, endPosition)
-
 	// Don't include the section header line in the outbuf
 	startPosition = startPosition + len(sectionHeader) + 1
 
 	outbuf = rt.Raw[startPosition:endPosition]
 
-	fmt.Println(string(outbuf))
+	log.WithFields(log.Fields{
+		"sectionHeader": sectionHeader,
+		"startPosition": startPosition,
+		"endPosition":   endPosition,
+		"sectionBytes":  len(outbuf),
+	}).Debug("Section Range calculated")
 
 	return
 }
