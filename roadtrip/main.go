@@ -69,7 +69,6 @@ func (rt *CSV) LoadFile(filename string) error {
 	log.WithFields(log.Fields{
 		"filename":          rt.Filename,
 		"bytes":             len(buf),
-		"lines":             len(rt.Raw),
 		"vehicleRecords":    len(rt.Vehicle),
 		"fuelRecords":       len(rt.FuelRecords),
 		"mainteanceRecords": len(rt.MaintenanceRecords),
