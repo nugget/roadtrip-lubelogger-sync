@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/tiendc/go-csvlib"
 
@@ -115,7 +116,7 @@ func (rt *CSV) Section(sectionHeader string) (outbuf []byte) {
 		"startPosition": startPosition,
 		"endPosition":   endPosition,
 		"sectionBytes":  len(outbuf),
-	}).Debug("Section Range calculated")
+	}).Trace("Section Range calculated")
 
 	return
 }
@@ -126,4 +127,19 @@ func (rt *CSV) Parse(sectionHeader string, target interface{}) error {
 	}
 
 	return nil
+}
+
+func ParseDate(dateString string) (t time.Time) {
+	t, err := time.Parse("2006-1-2 15:04", dateString)
+	if err != nil {
+		t, err = time.Parse("2006-1-2", dateString)
+		if err != nil {
+			log.WithFields(log.Fields{
+				"error":      err,
+				"dateString": dateString,
+			}).Debug("Can't parse Road Trip date string")
+		}
+	}
+
+	return t
 }

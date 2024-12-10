@@ -2,6 +2,12 @@ package roadtrip
 
 // Road Trip Data File version 1500,en
 
+import (
+	"fmt"
+
+	log "github.com/sirupsen/logrus"
+)
+
 var HEADERS = []string{
 	"FUEL RECORDS",
 	"MAINTENANCE RECORDS",
@@ -13,14 +19,14 @@ var HEADERS = []string{
 
 // FUEL RECORDS
 type Fuel struct {
-	Odometer     int     `csv:"Odometer (mi)"`
-	TripDistance int     `csv:"Trip Distance,omitempty"`
+	Odometer     float64 `csv:"Odometer (mi)"`
+	TripDistance float64 `csv:"Trip Distance,omitempty"`
 	Date         string  `csv:"Date"`
 	FillAmount   float64 `csv:"Fill Amount,omitempty"`
 	FillUnits    string  `csv:"Fill Units"`
 	PricePerUnit float64 `csv:"Price per Unit,omitempty"`
 	TotalPrice   float64 `csv:"Total Price,omitempty"`
-	PartialFill  bool    `csv:"Partial Fill,omitempty"`
+	PartialFill  string  `csv:"Partial Fill,omitempty"`
 	MPG          float64 `csv:"MPG,omitempty"`
 	Note         string  `csv:"Note"`
 	Octane       string  `csv:"Octane"`
@@ -42,11 +48,24 @@ type Fuel struct {
 	TankNumber   int     `csv:"Tank Number,omitempty"`
 }
 
+func (f *Fuel) Comparator() string {
+	return fmt.Sprintf("%07d", int64(f.Odometer))
+}
+
+func (f *Fuel) Logrus() *log.Entry {
+	return log.WithFields(log.Fields{
+		"odometer":   f.Odometer,
+		"date":       f.Date,
+		"location":   f.Location,
+		"totalPrice": f.TotalPrice,
+	})
+}
+
 // MAINTENANCE RECORDS
 type Maintenance struct {
 	Description          string  `csv:"Description"`
 	Date                 string  `csv:"Date"`
-	Odometer             int     `csv:"Odometer (mi.),omitempty"`
+	Odometer             float64 `csv:"Odometer (mi.),omitempty"`
 	Cost                 float64 `csv:"Cost,omitempty"`
 	Note                 string  `csv:"Note"`
 	Location             string  `csv:"Location"`
@@ -68,17 +87,17 @@ type Maintenance struct {
 
 // ROAD TRIPS
 type RoadTrip struct {
-	Name          string `csv:"Name"`
-	StartDate     string `csv:"Start Date"`
-	StartOdometer int    `csv:"Start Odometer (mi.),omitempty"`
-	EndDate       string `csv:"End Date"`
-	EndOdometer   int    `csv:"End Odometer,omitempty"`
-	Note          string `csv:"Note"`
-	Distance      int    `csv:"Distance,omitempty"`
-	ID            int    `csv:"ID,omitempty"`
-	Type          string `csv:"Type"`
-	Categories    string `csv:"Categories"`
-	Flags         string `csv:"Flags"`
+	Name          string  `csv:"Name"`
+	StartDate     string  `csv:"Start Date"`
+	StartOdometer float64 `csv:"Start Odometer (mi.),omitempty"`
+	EndDate       string  `csv:"End Date"`
+	EndOdometer   float64 `csv:"End Odometer,omitempty"`
+	Note          string  `csv:"Note"`
+	Distance      float64 `csv:"Distance,omitempty"`
+	ID            int     `csv:"ID,omitempty"`
+	Type          string  `csv:"Type"`
+	Categories    string  `csv:"Categories"`
+	Flags         string  `csv:"Flags"`
 }
 
 // VEHICLE
@@ -87,7 +106,7 @@ type Vehicle struct {
 	Odometer            string  `csv:"Odometer"`
 	Units               string  `csv:"Units"`
 	Notes               string  `csv:"Notes"`
-	TankCapacity        float64 `csv:"Tank Capacity"`
+	TankCapacity        float64 `csv:"Tank Capacity,omitempty"`
 	Tank1Units          string  `csv:"Tank Units"`
 	HomeCurrency        string  `csv:"Home Currency"`
 	Flags               string  `csv:"Flags"`
