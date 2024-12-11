@@ -24,7 +24,7 @@ func FormatDate(t time.Time) string {
 }
 
 func Vehicles() (response []Vehicle, err error) {
-	body, err := Get("vehicles")
+	body, err := APIGet("vehicles")
 
 	err = json.Unmarshal(body, &response)
 	if err != nil {
@@ -35,7 +35,7 @@ func Vehicles() (response []Vehicle, err error) {
 }
 
 func GasRecords(vehicleID int) (response VehicleGasRecords, err error) {
-	body, err := Get(fmt.Sprintf("vehicle/gasrecords?vehicleID=%d", vehicleID))
+	body, err := APIGet(fmt.Sprintf("vehicle/gasrecords?vehicleID=%d", vehicleID))
 
 	err = json.Unmarshal(body, &response.Records)
 	if err != nil {
@@ -61,7 +61,9 @@ func AddGasRecord(vehicleID int, gr GasRecord) (PostResponse, error) {
 
 	// fmt.Printf("%+v\n", requestBody.Encode())
 
-	response, err := Post(fmt.Sprintf("vehicle/gasrecords/add?vehicleID=%d", vehicleID), requestBody)
+	endpoint := fmt.Sprintf("vehicle/gasrecords/add?vehicleID=%d", vehicleID)
+
+	response, err := APIPostForm(endpoint, requestBody)
 	if err != nil {
 		gr.Logrus().WithFields(log.Fields{
 			"requestBody": requestBody.Encode(),
