@@ -3,9 +3,8 @@ package lubelogger
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -14,7 +13,7 @@ var (
 )
 
 func Init(uri, auth string) {
-	log.Trace("Initializing logrus api")
+	slog.Debug("Initializing LubeLogger API")
 	api_uri = uri
 	authorization = auth
 }
@@ -42,10 +41,10 @@ func GasRecords(vehicleID int) (response VehicleGasRecords, err error) {
 		return VehicleGasRecords{}, fmt.Errorf("unmarshalling json: %w", err)
 	}
 
-	log.WithFields(log.Fields{
-		"vehicleID": vehicleID,
-		"count":     len(response.Records),
-	}).Info("Loaded LubeLogger GasRecords")
+	slog.Info("Loaded LubeLogger GasRecords",
+		"vehicleID", vehicleID,
+		"count", len(response.Records),
+	)
 
 	return response, nil
 }
@@ -53,11 +52,11 @@ func GasRecords(vehicleID int) (response VehicleGasRecords, err error) {
 func AddGasRecord(vehicleID int, gr GasRecord) (PostResponse, error) {
 	requestBody := gr.URLValues()
 
-	log.WithFields(log.Fields{
-		"vehicleID":   vehicleID,
-		"gr":          gr,
-		"requestBody": requestBody.Encode(),
-	}).Trace("AddRecord()")
+	slog.Debug("AddRecord()",
+		"vehicleID", vehicleID,
+		"gr", gr,
+		"requestBody", requestBody.Encode(),
+	)
 
 	// fmt.Printf("%+v\n", requestBody.Encode())
 
@@ -65,10 +64,11 @@ func AddGasRecord(vehicleID int, gr GasRecord) (PostResponse, error) {
 
 	response, err := APIPostForm(endpoint, requestBody)
 	if err != nil {
-		gr.Logrus().WithFields(log.Fields{
-			"requestBody": requestBody.Encode(),
-			"vehicleID":   vehicleID,
-		}).Debug("Request Trace")
+		slog.Debug("Request Debug",
+			"gr", gr,
+			"requestBody", requestBody.Encode(),
+			"vehicleID", vehicleID,
+		)
 
 		return response, fmt.Errorf("AddGasRecord: %w", err)
 	}

@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // Construct a full request URL by combining the supplied endpoint with the
@@ -29,10 +28,10 @@ func authorizationHeader() string {
 func GetEndpoint(endpoint string) (*http.Response, error) {
 	requestURL := endpointURL(endpoint)
 
-	log.WithFields(log.Fields{
-		"endpoint":   endpoint,
-		"requestURL": requestURL,
-	}).Trace("GetEndpoint called")
+	slog.Debug("GetEndpoint called",
+		"endpoint", endpoint,
+		"requestURL", requestURL,
+	)
 
 	apiRequest, err := http.NewRequest(http.MethodGet, requestURL, nil)
 	if err != nil {
@@ -43,12 +42,12 @@ func GetEndpoint(endpoint string) (*http.Response, error) {
 
 	apiResponse, err := http.DefaultClient.Do(apiRequest)
 
-	log.WithFields(log.Fields{
-		"endpoint":      endpoint,
-		"statusCode":    apiResponse.StatusCode,
-		"proto":         apiResponse.Proto,
-		"contentLength": apiResponse.ContentLength,
-	}).Debug("GetEndpoint apiResponse")
+	slog.Debug("GetEndpoint apiResponse",
+		"endpoint", endpoint,
+		"statusCode", apiResponse.StatusCode,
+		"proto", apiResponse.Proto,
+		"contentLength", apiResponse.ContentLength,
+	)
 
 	return apiResponse, err
 }
@@ -66,9 +65,9 @@ func APIGet(endpoint string) ([]byte, error) {
 		return nil, fmt.Errorf("reading responseBody: %w", err)
 	}
 
-	log.WithFields(log.Fields{
-		"responseBytes": len(responseBody),
-	}).Debug("LubeLogger APIGet")
+	slog.Debug("LubeLogger APIGet",
+		"responseBytes", len(responseBody),
+	)
 
 	return responseBody, nil
 }
@@ -78,11 +77,11 @@ func APIGet(endpoint string) ([]byte, error) {
 func PostFormEndpoint(endpoint string, data url.Values) (*http.Response, error) {
 	requestURL := endpointURL(endpoint)
 
-	log.WithFields(log.Fields{
-		"endpoint":   endpoint,
-		"requestURL": requestURL,
-		"data":       data,
-	}).Trace("PostFormEndpoint called")
+	slog.Debug("PostFormEndpoint called",
+		"endpoint", endpoint,
+		"requestURL", requestURL,
+		"data", data,
+	)
 
 	requestBody := strings.NewReader(data.Encode())
 
@@ -96,12 +95,12 @@ func PostFormEndpoint(endpoint string, data url.Values) (*http.Response, error) 
 
 	apiResponse, err := http.DefaultClient.Do(apiRequest)
 
-	log.WithFields(log.Fields{
-		"endpoint":      endpoint,
-		"statusCode":    apiResponse.StatusCode,
-		"proto":         apiResponse.Proto,
-		"contentLength": apiResponse.ContentLength,
-	}).Debug("PostFormEndpoint apiResponse")
+	slog.Debug("PostFormEndpoint apiResponse",
+		"endpoint", endpoint,
+		"statusCode", apiResponse.StatusCode,
+		"proto", apiResponse.Proto,
+		"contentLength", apiResponse.ContentLength,
+	)
 
 	return apiResponse, err
 }
@@ -124,13 +123,13 @@ func APIPostForm(endpoint string, data url.Values) (response PostResponse, err e
 		return PostResponse{}, fmt.Errorf("unmarshalling json: %w", err)
 	}
 
-	log.WithFields(log.Fields{
-		"success":    response.Success,
-		"message":    response.Message,
-		"status":     apiResponse.StatusCode,
-		"formBytes":  len(data.Encode()),
-		"formFields": len(data),
-	}).Debug("LubeLogger APIPostForm")
+	slog.Debug("LubeLogger APIPostForm",
+		"success", response.Success,
+		"message", response.Message,
+		"status", apiResponse.StatusCode,
+		"formBytes", len(data.Encode()),
+		"formFields", len(data),
+	)
 
 	if !response.Success {
 		return response, fmt.Errorf("post: %s", response.Message)

@@ -2,10 +2,9 @@ package lubelogger
 
 import (
 	"fmt"
+	"log/slog"
 	"net/url"
 	"strconv"
-
-	log "github.com/sirupsen/logrus"
 )
 
 type PostResponse struct {
@@ -28,8 +27,8 @@ type Vehicle struct {
 	LicensePlate          string       `json:"licensePlate"`
 	PurchaseDate          string       `json:"purchaseDate"`
 	SoldDate              string       `json:"soldDate"`
-	PurchasePrice         int          `json:"purchasePrice"`
-	SoldPrice             int          `json:"soldPrice"`
+	PurchasePrice         float64      `json:"purchasePrice"`
+	SoldPrice             float64      `json:"soldPrice"`
 	IsElectric            bool         `json:"isElectric"`
 	IsDiesel              bool         `json:"isDiesel"`
 	UseHours              bool         `json:"useHours"`
@@ -52,12 +51,14 @@ func (v *Vehicle) CSVFilename() string {
 	return ""
 }
 
-func (v *Vehicle) Logrus() *log.Entry {
-	return log.WithFields(log.Fields{
-		"year":  v.Year,
-		"make":  v.Make,
-		"model": v.Model,
-	})
+// LogValue is the handler for [log.slog] to emit structured output for a
+// [Vehicle] object when logging.
+func (v *Vehicle) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.Int("year", v.Year),
+		slog.String("make", v.Make),
+		slog.String("model", v.Model),
+	)
 }
 
 func (v *Vehicle) FindGasRecord(comparator string) (GasRecord, error) {
@@ -82,11 +83,13 @@ type GasRecord struct {
 	ExtraFields  []ExtraField `json:"extraFields"`
 }
 
-func (gr *GasRecord) Logrus() *log.Entry {
-	return log.WithFields(log.Fields{
-		"date":     gr.Date,
-		"odometer": gr.Odometer,
-	})
+// LogValue is the handler for [log.slog] to emit structured output for a
+// [GasRecord] object when logging.
+func (gr *GasRecord) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("date", gr.Date),
+		slog.String("Odometer", gr.Odometer),
+	)
 }
 
 func (gr *GasRecord) Comparator() (comparator string) {
@@ -96,14 +99,18 @@ func (gr *GasRecord) Comparator() (comparator string) {
 
 	i, err := strconv.Atoi(gr.Odometer)
 	if err != nil {
-		gr.Logrus().WithError(err).Error("Unable to parse Odometer value")
+		slog.Error("Unable to parse Odometer value",
+			"error", err,
+			"gasRecord", gr,
+		)
 	}
 
 	comparator = fmt.Sprintf("%07d", i)
 
-	gr.Logrus().WithFields(log.Fields{
-		"comparator": comparator,
-	}).Trace("Calculated comparator")
+	slog.Debug("Calculated GasRecord comparator",
+		"gr", gr,
+		"comparator", comparator,
+	)
 
 	return comparator
 }

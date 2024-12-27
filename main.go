@@ -1,17 +1,19 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"log/slog"
+	"os"
+	"path/filepath"
 	"strings"
 
+	"github.com/nugget/roadtrip"
 	"github.com/nugget/roadtrip-lubelogger-sync/lubelogger"
-	"github.com/nugget/roadtrip-lubelogger-sync/roadtrip"
-
-	log "github.com/sirupsen/logrus"
 )
 
 func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.CSV) error {
-	v.Logrus().Trace("Synching fillups")
+	slog.Debug("Synching fillups")
 
 	var (
 		rtInsertQueue []roadtrip.Fuel
@@ -28,57 +30,62 @@ func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.CSV) error {
 
 		gr, err := llGasRecords.FindGasRecord(rtComparator)
 		if err != nil {
-			log.WithError(err).Error("FindGasRecord failed")
+			slog.Error("FindGasRecord failed",
+				"error", err,
+			)
 			break
 		}
 
 		llComparator := gr.Comparator()
 
 		if llComparator == rtComparator {
-			log.WithFields(log.Fields{
-				"rtIndex":    i,
-				"comparator": rtComparator,
-				"llOdometer": gr.Odometer,
-			}).Trace("RT Fillup found in LubeLogger")
+			slog.Debug("RT Fillup found in LubeLogger",
+				"rtIndex", i,
+				"comparator", rtComparator,
+				"llOdometer", gr.Odometer,
+			)
 
 		} else {
-			log.WithFields(log.Fields{
-				"rtIndex":    i,
-				"comparator": rtComparator,
-			}).Trace("RT Fillup not in LubeLogger, Enqueing")
+			slog.Debug("RT Fillup not in LubeLogger, Enqueing",
+				"rtIndex", i,
+				"comparator", rtComparator,
+			)
 			rtInsertQueue = append(rtInsertQueue, rtf)
 		}
 	}
 
-	log.WithFields(log.Fields{
-		"rtCount": len(rtInsertQueue),
-		"llCount": len(llInsertQueue),
-	}).Info("Missing Fuel records enqueued")
+	slog.Info("Missing Fuel records enqueued",
+		"rtCount", len(rtInsertQueue),
+		"llCount", len(llInsertQueue),
+	)
 
 	for i, e := range rtInsertQueue {
-		e.Logrus().WithFields(log.Fields{
-			"index": i,
-		}).Trace("Adding Road Trip Fillup to LubeLogger")
+		slog.Debug("Adding Road Trip Fillup to LubeLogger",
+			"index", i,
+			"fuelEntry", e,
+		)
 
 		gr, err := TransformRoadTripFuelToLubeLogger(e)
 		if err != nil {
-			e.Logrus().WithError(err).Error("Failed Adding Road Trip Fillup to LubeLogger")
+			slog.Error("Failed Adding Road Trip Fillup to LubeLogger", "error", err)
 			break
 		}
 
 		response, err := lubelogger.AddGasRecord(v.ID, gr)
 		if err != nil {
-			e.Logrus().WithFields(log.Fields{
-				"index": i,
-				"error": err,
-			}).Info("Failed Adding Road Trip Fillup to LubeLogger")
+			slog.Error("Failed Adding Road Trip Fillup to LubeLogger",
+				"index", i,
+				"fuelEntry", e,
+				"error", err,
+			)
 			break
 		}
-		e.Logrus().WithFields(log.Fields{
-			"index":   i,
-			"success": response.Success,
-			"message": response.Message,
-		}).Info("Added Road Trip Fillup to LubeLogger")
+		slog.Info("Added Road Trip Fillup to LubeLogger",
+			"index", i,
+			"fuelEntry", e,
+			"success", response.Success,
+			"message", response.Message,
+		)
 	}
 
 	return nil
@@ -115,36 +122,43 @@ func TransformRoadTripFuelToLubeLogger(rtf roadtrip.Fuel) (lubelogger.GasRecord,
 }
 
 func main() {
-	log.SetLevel(log.DebugLevel)
+	_ = slog.SetLogLoggerLevel(slog.LevelInfo)
+
+	var roadtripCSVPath = flag.String("csvpath", "./testdata/CSV", "Location of Road Trip CSV files")
+
+	flag.Parse()
 
 	lubelogger.Init(API_URI, AUTHORIZATION)
 
 	vehicles, err := lubelogger.Vehicles()
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Error loading lubelogger Vehicles", "error", err)
+		os.Exit(1)
 	}
 
 	for _, v := range vehicles {
 		filename := v.CSVFilename()
 
-		v.Logrus().WithFields(log.Fields{
-			"roadTripCSV": filename,
-		}).Info("Evaluating lubelogger vehicle")
+		slog.Info("Evaluating lubelogger vehicle",
+			"roadTripCSV", filename,
+		)
 
 		if filename != "" {
-			var rt roadtrip.CSV
-			err := rt.LoadFile(fmt.Sprintf("data/CSV/%s", filename))
+			rt, err := roadtrip.NewFromFile(filepath.Join(*roadtripCSVPath, filename))
+
 			if err != nil {
-				v.Logrus().WithFields(log.Fields{
-					"filename": filename,
-					"error":    err,
-				}).Error("Error loading vehicle")
+				slog.Error("Error loading vehicle",
+					"filename", filename,
+					"error", err,
+				)
 				break
 			}
 
 			err = SyncGasRecords(v, rt)
 			if err != nil {
-				v.Logrus().WithError(err).Error("Error synching fuel records")
+				slog.Error("Error synching fuel records",
+					"error", err,
+				)
 				break
 			}
 		}
