@@ -2,7 +2,7 @@ module github.com/nugget/roadtrip-lubelogger-sync
 
 go 1.23.3
 
-require github.com/nugget/roadtrip-go/roadtrip v0.0.0-00010101000000-000000000000
+require github.com/nugget/roadtrip-go/roadtrip v0.0.0-20241228055138-36e5f41ec9fe
 
 require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -11,5 +11,3 @@ require (
 	github.com/tiendc/go-rflutil v0.0.0-20231112145832-693b7b74d697 // indirect
 	github.com/tiendc/gofn v1.11.0 // indirect
 )
-
-replace github.com/nugget/roadtrip-go/roadtrip => "/Users/nugget/src/Vehicle Fleet/roadtrip-go/roadtrip"
