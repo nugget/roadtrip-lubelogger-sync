@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nugget/roadtrip"
+	"github.com/nugget/roadtrip-go/roadtrip"
 	"github.com/nugget/roadtrip-lubelogger-sync/lubelogger"
 )
 
@@ -125,8 +125,13 @@ func main() {
 	_ = slog.SetLogLoggerLevel(slog.LevelInfo)
 
 	var roadtripCSVPath = flag.String("csvpath", "./testdata/CSV", "Location of Road Trip CSV files")
+	var debugMode = flag.Bool("v", false, "Verbose logging")
 
 	flag.Parse()
+
+	if *debugMode {
+		_ = slog.SetLogLoggerLevel(slog.LevelDebug)
+	}
 
 	lubelogger.Init(API_URI, AUTHORIZATION)
 

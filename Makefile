@@ -5,11 +5,11 @@ fetchdata:
 	cd data && unzip -o dropbox.zip
 
 localdev:
-	go mod edit -replace=github.com/nugget/roadtrip="/Users/nugget/src/Vehicle Fleet/roadtrip-api-go"
+	go mod edit -replace=github.com/nugget/roadtrip-go/roadtrip="/Users/nugget/src/Vehicle Fleet/roadtrip-go/roadtrip"
 	go mod tidy
 
 productiondev:
-	go mod edit -dropreplace=github.com/nugget/roadtrip
+	go mod edit -dropreplace=github.com/nugget/roadtrip-go/roadtrip
 	go mod tidy
 
 testrun: localdev
