@@ -11,3 +11,5 @@ require (
 	github.com/tiendc/go-rflutil v0.0.0-20231112145832-693b7b74d697 // indirect
 	github.com/tiendc/gofn v1.11.0 // indirect
 )
+
+replace github.com/nugget/roadtrip-go/roadtrip => "/Users/nugget/src/Vehicle Fleet/roadtrip-go/roadtrip"
