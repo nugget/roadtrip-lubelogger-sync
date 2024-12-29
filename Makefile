@@ -1,8 +1,16 @@
 BINARYNAME=rt2ll
 
+DATADIR=./testdata
+
+mod:
+	 go get -u github.com/nugget/roadtrip-go/roadtrip
+	 go get -u
+	 go mod tidy
+	 git commit go.mod go.sum -m "make mod"
+
 fetchdata:
-	curl --output ./data/dropbox.zip --location "https://www.dropbox.com/scl/fo/bhu66tpp1f1rbth9ry855/AGfHN9BGzzypwMcDtlySXQc?rlkey=66a2wjdthk9v9gvouw1kmb14f&st=17g3t3vx&dl=0"
-	cd data && unzip -o dropbox.zip
+	curl --output $(DATADIR)/dropbox.zip --location "https://www.dropbox.com/scl/fo/bhu66tpp1f1rbth9ry855/AGfHN9BGzzypwMcDtlySXQc?rlkey=66a2wjdthk9v9gvouw1kmb14f&st=17g3t3vx&dl=0"
+	cd $(DATADIR) && unzip -o dropbox.zip
 
 localdev:
 	go mod edit -replace=github.com/nugget/roadtrip-go/roadtrip="/Users/nugget/src/Vehicle Fleet/roadtrip-go/roadtrip"
@@ -12,9 +20,9 @@ productiondev:
 	go mod edit -dropreplace=github.com/nugget/roadtrip-go/roadtrip
 	go mod tidy
 
-testrun: localdev
+testrun: 
 	clearbuffer && go mod tidy && go build -o dist/$(BINARYNAME)
-	./dist/$(BINARYNAME)
+	./dist/$(BINARYNAME) 
 
 linux: productiondev
 	env GOOS=linux GOARCH=amd64 go build -o dist/$(BINARYNAME)-linux-amd64

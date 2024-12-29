@@ -1,48 +1,45 @@
 package lubelogger
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
 // Construct a full request URL by combining the supplied endpoint with the
-// api_url configuration value
-
+// api_url configuration value.
 func endpointURL(endpoint string) string {
-	return fmt.Sprintf("%s/%s", api_uri, endpoint)
+	return fmt.Sprintf("%s/%s", apiURI, endpoint)
 }
 
-// Value for the authorization header expected by th LubeLogger API
-
+// Value for the authorization header expected by th LubeLogger API.
 func authorizationHeader() string {
 	return authorization
 }
 
-// LubeLogger endpoint drop-in replacement for http.Get()
-
-func GetEndpoint(endpoint string) (*http.Response, error) {
+// LubeLogger endpoint drop-in replacement for http.Get().
+func GetEndpointWithContext(ctx context.Context, endpoint string) (*http.Response, error) {
 	requestURL := endpointURL(endpoint)
 
-	slog.Debug("GetEndpoint called",
+	logger.DebugContext(ctx, "GetEndpoint called",
 		"endpoint", endpoint,
-		"requestURL", requestURL,
+		"url", requestURL,
 	)
 
-	apiRequest, err := http.NewRequest(http.MethodGet, requestURL, nil)
+	apiRequest, err := http.NewRequestWithContext(ctx, http.MethodGet, requestURL, nil)
 	if err != nil {
-		return nil, fmt.Errorf("GetEndpoint NewRequest: %w", err)
+		return nil, fmt.Errorf("GetEndpointWithContext NewRequest: %w", err)
 	}
 
 	apiRequest.Header.Add("Authorization", authorizationHeader())
 
 	apiResponse, err := http.DefaultClient.Do(apiRequest)
 
-	slog.Debug("GetEndpoint apiResponse",
+	logger.DebugContext(ctx, "GetEndpointWithContext apiResponse",
 		"endpoint", endpoint,
 		"statusCode", apiResponse.StatusCode,
 		"proto", apiResponse.Proto,
@@ -52,42 +49,43 @@ func GetEndpoint(endpoint string) (*http.Response, error) {
 	return apiResponse, err
 }
 
-// Wrapped Get for standardized call of API GET endpoints
-
+// Wrapped Get for standardized call of API GET endpoints.
 func APIGet(endpoint string) ([]byte, error) {
-	apiResponse, err := GetEndpoint(endpoint)
+	ctx := context.Background()
+
+	apiResponse, err := GetEndpointWithContext(ctx, endpoint)
 	if err != nil {
-		return nil, fmt.Errorf("APIGet GetEndpoint: %w", err)
+		return nil, fmt.Errorf("APIGet GetEndpointWithContext: %w", err)
 	}
+	defer apiResponse.Body.Close()
 
 	responseBody, err := io.ReadAll(apiResponse.Body)
 	if err != nil {
 		return nil, fmt.Errorf("reading responseBody: %w", err)
 	}
 
-	slog.Debug("LubeLogger APIGet",
+	logger.DebugContext(ctx, "LubeLogger APIGet",
 		"responseBytes", len(responseBody),
 	)
 
 	return responseBody, nil
 }
 
-// LubeLogger endpoint drop-in replacement for http.PostForm()
-
-func PostFormEndpoint(endpoint string, data url.Values) (*http.Response, error) {
+// LubeLogger endpoint drop-in replacement for http.PostForm().
+func PostFormEndpointWithContext(ctx context.Context, endpoint string, data url.Values) (*http.Response, error) {
 	requestURL := endpointURL(endpoint)
 
-	slog.Debug("PostFormEndpoint called",
+	logger.DebugContext(ctx, "PostFormEndpoint called",
 		"endpoint", endpoint,
-		"requestURL", requestURL,
+		"url", requestURL,
 		"data", data,
 	)
 
 	requestBody := strings.NewReader(data.Encode())
 
-	apiRequest, err := http.NewRequest(http.MethodPost, requestURL, requestBody)
+	apiRequest, err := http.NewRequestWithContext(ctx, http.MethodPost, requestURL, requestBody)
 	if err != nil {
-		return nil, fmt.Errorf("PostFormEndpoint NewRequest: %w", err)
+		return nil, fmt.Errorf("PostFormEndpointWithContext NewRequest: %w", err)
 	}
 
 	apiRequest.Header.Add("Authorization", authorizationHeader())
@@ -95,7 +93,7 @@ func PostFormEndpoint(endpoint string, data url.Values) (*http.Response, error) 
 
 	apiResponse, err := http.DefaultClient.Do(apiRequest)
 
-	slog.Debug("PostFormEndpoint apiResponse",
+	logger.DebugContext(ctx, "PostFormEndpoint apiResponse",
 		"endpoint", endpoint,
 		"statusCode", apiResponse.StatusCode,
 		"proto", apiResponse.Proto,
@@ -105,13 +103,17 @@ func PostFormEndpoint(endpoint string, data url.Values) (*http.Response, error) 
 	return apiResponse, err
 }
 
-// Wrapped PostForm for standardized call of API POST endpoints
+// Wrapped PostForm for standardized call of API POST endpoints.
+func APIPostForm(endpoint string, data url.Values) (PostResponse, error) {
+	var response PostResponse
 
-func APIPostForm(endpoint string, data url.Values) (response PostResponse, err error) {
-	apiResponse, err := PostFormEndpoint(endpoint, data)
+	ctx := context.Background()
+
+	apiResponse, err := PostFormEndpointWithContext(ctx, endpoint, data)
 	if err != nil {
 		return PostResponse{}, fmt.Errorf("APIPostForm PostFormEndpoint: %w", err)
 	}
+	defer apiResponse.Body.Close()
 
 	responseBody, err := io.ReadAll(apiResponse.Body)
 	if err != nil {
@@ -123,7 +125,7 @@ func APIPostForm(endpoint string, data url.Values) (response PostResponse, err e
 		return PostResponse{}, fmt.Errorf("unmarshalling json: %w", err)
 	}
 
-	slog.Debug("LubeLogger APIPostForm",
+	logger.Debug("LubeLogger APIPostForm",
 		"success", response.Success,
 		"message", response.Message,
 		"status", apiResponse.StatusCode,

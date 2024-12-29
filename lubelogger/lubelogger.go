@@ -8,13 +8,15 @@ import (
 )
 
 var (
-	api_uri       string
+	apiURI        string
 	authorization string
+	logger        *slog.Logger
 )
 
-func Init(uri, auth string) {
-	slog.Debug("Initializing LubeLogger API")
-	api_uri = uri
+func Init(uri, auth string, l *slog.Logger) {
+	logger = l
+	logger.Debug("Initializing LubeLogger API")
+	apiURI = uri
 	authorization = auth
 }
 
@@ -22,8 +24,15 @@ func FormatDate(t time.Time) string {
 	return t.Format("1/2/2006")
 }
 
-func Vehicles() (response []Vehicle, err error) {
+func Vehicles() ([]Vehicle, error) {
+	var (
+		response []Vehicle
+	)
+
 	body, err := APIGet("vehicles")
+	if err != nil {
+		return nil, err
+	}
 
 	err = json.Unmarshal(body, &response)
 	if err != nil {
@@ -33,16 +42,23 @@ func Vehicles() (response []Vehicle, err error) {
 	return response, nil
 }
 
-func GasRecords(vehicleID int) (response VehicleGasRecords, err error) {
+func GasRecords(vehicleID int) (VehicleGasRecords, error) {
+	var (
+		response VehicleGasRecords
+	)
+
 	body, err := APIGet(fmt.Sprintf("vehicle/gasrecords?vehicleID=%d", vehicleID))
+	if err != nil {
+		return VehicleGasRecords{}, err
+	}
 
 	err = json.Unmarshal(body, &response.Records)
 	if err != nil {
 		return VehicleGasRecords{}, fmt.Errorf("unmarshalling json: %w", err)
 	}
 
-	slog.Info("Loaded LubeLogger GasRecords",
-		"vehicleID", vehicleID,
+	logger.Info("Loaded LubeLogger GasRecords",
+		"vehicleId", vehicleID,
 		"count", len(response.Records),
 	)
 
@@ -52,8 +68,8 @@ func GasRecords(vehicleID int) (response VehicleGasRecords, err error) {
 func AddGasRecord(vehicleID int, gr GasRecord) (PostResponse, error) {
 	requestBody := gr.URLValues()
 
-	slog.Debug("AddRecord()",
-		"vehicleID", vehicleID,
+	logger.Debug("AddRecord()",
+		"vehicleId", vehicleID,
 		"gr", gr,
 		"requestBody", requestBody.Encode(),
 	)
@@ -64,10 +80,10 @@ func AddGasRecord(vehicleID int, gr GasRecord) (PostResponse, error) {
 
 	response, err := APIPostForm(endpoint, requestBody)
 	if err != nil {
-		slog.Debug("Request Debug",
+		logger.Debug("Request Debug",
 			"gr", gr,
 			"requestBody", requestBody.Encode(),
-			"vehicleID", vehicleID,
+			"vehicleId", vehicleID,
 		)
 
 		return response, fmt.Errorf("AddGasRecord: %w", err)
