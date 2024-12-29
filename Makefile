@@ -20,7 +20,7 @@ productiondev:
 	go mod edit -dropreplace=github.com/nugget/roadtrip-go/roadtrip
 	go mod tidy
 
-testrun: localdev
+testrun: 
 	clearbuffer && go mod tidy && go build -o dist/$(BINARYNAME)
 	./dist/$(BINARYNAME) 
 
