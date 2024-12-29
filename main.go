@@ -16,9 +16,6 @@ import (
 var (
 	logger   *slog.Logger
 	logLevel *slog.LevelVar
-
-	apiURI        string = "https://lubelogger.example.com/api"
-	authorization string = "Basic BASIC_AUTH_TOKEN_GOES_HERE"
 )
 
 func rtfComparator(f roadtrip.FuelRecord) string {
@@ -150,12 +147,27 @@ func setupLogs() {
 	slog.SetLogLoggerLevel(slog.LevelInfo)
 }
 
+func setupSecrets() (string, string) {
+	var (
+		apiURI        = "https://lubelogger.example.com/api"
+		authorization = "Basic BASIC_AUTH_TOKEN_GOES_HERE"
+	)
+
+	apiURI = os.Getenv("API_URI")
+	authorization = os.Getenv("AUTHORIZATION")
+
+	return apiURI, authorization
+}
+
 func main() {
+	var (
+		roadtripCSVPath = flag.String("csvpath", "./testdata/CSV", "Location of Road Trip CSV files")
+		debugMode       = flag.Bool("v", false, "Verbose logging")
+	)
+
+	apiURI, authorization := setupSecrets()
+
 	setupLogs()
-
-	var roadtripCSVPath = flag.String("csvpath", "./testdata/CSV", "Location of Road Trip CSV files")
-	var debugMode = flag.Bool("v", false, "Verbose logging")
-
 	flag.Parse()
 
 	options := roadtrip.VehicleOptions{
