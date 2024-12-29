@@ -1,8 +1,10 @@
 BINARYNAME=rt2ll
 
+DATADIR=./testdata
+
 fetchdata:
-	curl --output ./data/dropbox.zip --location "https://www.dropbox.com/scl/fo/bhu66tpp1f1rbth9ry855/AGfHN9BGzzypwMcDtlySXQc?rlkey=66a2wjdthk9v9gvouw1kmb14f&st=17g3t3vx&dl=0"
-	cd data && unzip -o dropbox.zip
+	curl --output $(DATADIR)/dropbox.zip --location "https://www.dropbox.com/scl/fo/bhu66tpp1f1rbth9ry855/AGfHN9BGzzypwMcDtlySXQc?rlkey=66a2wjdthk9v9gvouw1kmb14f&st=17g3t3vx&dl=0"
+	cd $(DATADIR) && unzip -o dropbox.zip
 
 localdev:
 	go mod edit -replace=github.com/nugget/roadtrip-go/roadtrip="/Users/nugget/src/Vehicle Fleet/roadtrip-go/roadtrip"

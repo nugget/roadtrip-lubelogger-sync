@@ -12,6 +12,11 @@ import (
 	"github.com/nugget/roadtrip-lubelogger-sync/lubelogger"
 )
 
+var (
+	logger   *slog.Logger
+	logLevel *slog.LevelVar
+)
+
 func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.CSV) error {
 	slog.Debug("Synching fillups")
 
@@ -121,19 +126,43 @@ func TransformRoadTripFuelToLubeLogger(rtf roadtrip.Fuel) (lubelogger.GasRecord,
 	return gr, nil
 }
 
+func setupLogs() {
+	logLevel = new(slog.LevelVar)
+	logLevel.Set(slog.LevelInfo)
+
+	handlerOptions := &slog.HandlerOptions{
+		Level: logLevel,
+	}
+
+	logger = slog.New(slog.NewTextHandler(os.Stdout, handlerOptions))
+
+	slog.SetDefault(logger)
+	slog.SetLogLoggerLevel(slog.LevelInfo)
+}
+
 func main() {
-	_ = slog.SetLogLoggerLevel(slog.LevelInfo)
+	setupLogs()
 
 	var roadtripCSVPath = flag.String("csvpath", "./testdata/CSV", "Location of Road Trip CSV files")
 	var debugMode = flag.Bool("v", false, "Verbose logging")
 
 	flag.Parse()
 
+	options := roadtrip.VehicleOptions{
+		Logger: logger,
+	}
+
 	if *debugMode {
-		_ = slog.SetLogLoggerLevel(slog.LevelDebug)
+		// AddSource: true here
+		slog.SetLogLoggerLevel(slog.LevelDebug)
+		logLevel.Set(slog.LevelDebug)
 	}
 
 	lubelogger.Init(API_URI, AUTHORIZATION)
+
+	logger.Debug("Loading vehicles from LubeLogger API",
+		"uri", API_URI,
+	)
 
 	vehicles, err := lubelogger.Vehicles()
 	if err != nil {
