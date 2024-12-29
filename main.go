@@ -148,13 +148,11 @@ func setupLogs() {
 }
 
 func setupSecrets() (string, string) {
-	var (
-		apiURI        = "https://lubelogger.example.com/api"
-		authorization = "Basic BASIC_AUTH_TOKEN_GOES_HERE"
-	)
+	// apiURI        string = "https://lubelogger.example.com/api"
+	// authorization string = "Basic BASIC_AUTH_TOKEN_GOES_HERE"
 
-	apiURI = os.Getenv("API_URI")
-	authorization = os.Getenv("AUTHORIZATION")
+	apiURI := os.Getenv("API_URI")
+	authorization := os.Getenv("AUTHORIZATION")
 
 	return apiURI, authorization
 }

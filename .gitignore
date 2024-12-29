@@ -1,4 +1,4 @@
 .DS_Store
 testdata
-secrets.go
+secrets.fish
 dist
