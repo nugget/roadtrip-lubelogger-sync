@@ -39,7 +39,7 @@ type Vehicle struct {
 	OdometerMultiplier    string       `json:"odometerMultiplier"`
 	OdometerDifference    string       `json:"odometerDifference"`
 	DashboardMetrics      []string     `json:"dashboardMetrics"`
-	vehicleIdentifier     string       `json:"vehicleIdentifier"`
+	VehicleIdentifier     string       `json:"vehicleIdentifier"`
 }
 
 func (v *Vehicle) CSVFilename() string {
@@ -92,14 +92,16 @@ func (gr *GasRecord) LogValue() slog.Value {
 	)
 }
 
-func (gr *GasRecord) Comparator() (comparator string) {
+func (gr *GasRecord) Comparator() string {
+	var comparator string
+
 	if gr.Odometer == "" {
 		return comparator
 	}
 
 	i, err := strconv.Atoi(gr.Odometer)
 	if err != nil {
-		slog.Error("Unable to parse Odometer value",
+		logger.Error("Unable to parse Odometer value",
 			"error", err,
 			"gasRecord", gr,
 		)
@@ -107,7 +109,7 @@ func (gr *GasRecord) Comparator() (comparator string) {
 
 	comparator = fmt.Sprintf("%07d", i)
 
-	slog.Debug("Calculated GasRecord comparator",
+	logger.Debug("Calculated GasRecord comparator",
 		"gr", gr,
 		"comparator", comparator,
 	)

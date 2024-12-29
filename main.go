@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/nugget/roadtrip-go/roadtrip"
@@ -29,18 +30,18 @@ func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.Vehicle) error {
 		llInsertQueue []lubelogger.GasRecord
 	)
 
-	llGasRecords, err := lubelogger.GasRecords(v.ID)
-	if err != nil {
-		return err
+	llGasRecords, errGR := lubelogger.GasRecords(v.ID)
+	if errGR != nil {
+		return errGR
 	}
 
 	for i, rtf := range rt.FuelRecords {
 		rtComparator := rtfComparator(rtf)
 
-		gr, err := llGasRecords.FindGasRecord(rtComparator)
-		if err != nil {
+		gr, errFGR := llGasRecords.FindGasRecord(rtComparator)
+		if errFGR != nil {
 			logger.Error("FindGasRecord failed",
-				"error", err,
+				"error", errFGR,
 			)
 			break
 		}
@@ -53,7 +54,6 @@ func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.Vehicle) error {
 				"comparator", rtComparator,
 				"llOdometer", gr.Odometer,
 			)
-
 		} else {
 			logger.Debug("RT Fillup not in LubeLogger, Enqueing",
 				"rtIndex", i,
@@ -74,18 +74,18 @@ func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.Vehicle) error {
 			"fuelEntry", e,
 		)
 
-		gr, err := TransformRoadTripFuelToLubeLogger(e)
-		if err != nil {
-			logger.Error("Failed Adding Road Trip Fillup to LubeLogger", "error", err)
+		gr, errR2L := TransformRoadTripFuelToLubeLogger(e)
+		if errR2L != nil {
+			logger.Error("Failed Adding Road Trip Fillup to LubeLogger", "error", errR2L)
 			break
 		}
 
-		response, err := lubelogger.AddGasRecord(v.ID, gr)
-		if err != nil {
+		response, errAGR := lubelogger.AddGasRecord(v.ID, gr)
+		if errAGR != nil {
 			logger.Error("Failed Adding Road Trip Fillup to LubeLogger",
 				"index", i,
 				"fuelEntry", e,
-				"error", err,
+				"error", errAGR,
 			)
 			break
 		}
@@ -108,7 +108,7 @@ func TransformRoadTripFuelToLubeLogger(rtf roadtrip.FuelRecord) (lubelogger.GasR
 	}
 
 	gr.Date = lubelogger.FormatDate(date)
-	gr.Odometer = fmt.Sprintf("%d", int(rtf.Odometer))
+	gr.Odometer = strconv.Itoa(int(rtf.Odometer))
 	gr.FuelConsumed = fmt.Sprintf("%0.3f", rtf.FillAmount)
 	gr.Cost = fmt.Sprintf("%0.2f", rtf.TotalPrice)
 	gr.FuelEconomy = fmt.Sprintf("%f", rtf.MPG)
@@ -165,15 +165,15 @@ func main() {
 		logLevel.Set(slog.LevelDebug)
 	}
 
-	lubelogger.Init(API_URI, AUTHORIZATION)
+	lubelogger.Init(apiURI, authorization)
 
 	logger.Debug("Loading vehicles from LubeLogger API",
-		"uri", API_URI,
+		"uri", apiURI,
 	)
 
-	vehicles, err := lubelogger.Vehicles()
-	if err != nil {
-		logger.Error("Error loading lubelogger Vehicles", "error", err)
+	vehicles, errLV := lubelogger.Vehicles()
+	if errLV != nil {
+		logger.Error("Error loading lubelogger Vehicles", "error", errLV)
 		os.Exit(1)
 	}
 
@@ -181,24 +181,24 @@ func main() {
 		filename := v.CSVFilename()
 
 		logger.Info("Evaluating lubelogger vehicle",
-			"roadTripCSV", filename,
+			"filename", filename,
 		)
 
 		if filename != "" {
-			rt, err := roadtrip.NewVehicleFromFile(filepath.Join(*roadtripCSVPath, filename), options)
+			rt, errNV := roadtrip.NewVehicleFromFile(filepath.Join(*roadtripCSVPath, filename), options)
 
-			if err != nil {
+			if errNV != nil {
 				logger.Error("Error loading vehicle",
 					"filename", filename,
-					"error", err,
+					"error", errNV,
 				)
 				break
 			}
 
-			err = SyncGasRecords(v, rt)
-			if err != nil {
+			errSGR := SyncGasRecords(v, rt)
+			if errSGR != nil {
 				logger.Error("Error synching fuel records",
-					"error", err,
+					"error", errSGR,
 				)
 				break
 			}
