@@ -1,3 +1,5 @@
+[![Go](https://github.com/nugget/roadtrip-lubelogger-sync/actions/workflows/go.yml/badge.svg)](https://github.com/nugget/roadtrip-lubelogger-sync/actions/workflows/go.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/nugget/roadtrip-lubelogger-sync)](https://goreportcard.com/report/github.com/nugget/roadtrip-lubelogger-sync)
+
 # Road Trip MPG to LubeLogger Data Connector
 
 This repo contains various tools and server code to automatically synchronize
