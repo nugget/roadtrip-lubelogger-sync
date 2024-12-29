@@ -13,7 +13,8 @@ var (
 	logger        *slog.Logger
 )
 
-func Init(uri, auth string) {
+func Init(uri, auth string, l *slog.Logger) {
+	logger = l
 	logger.Debug("Initializing LubeLogger API")
 	apiURI = uri
 	authorization = auth

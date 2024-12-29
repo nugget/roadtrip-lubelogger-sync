@@ -21,7 +21,7 @@ productiondev:
 
 testrun: localdev
 	clearbuffer && go mod tidy && go build -o dist/$(BINARYNAME)
-	./dist/$(BINARYNAME)
+	./dist/$(BINARYNAME) 
 
 linux: productiondev
 	env GOOS=linux GOARCH=amd64 go build -o dist/$(BINARYNAME)-linux-amd64

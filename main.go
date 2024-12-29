@@ -165,7 +165,7 @@ func main() {
 		logLevel.Set(slog.LevelDebug)
 	}
 
-	lubelogger.Init(apiURI, authorization)
+	lubelogger.Init(apiURI, authorization, logger)
 
 	logger.Debug("Loading vehicles from LubeLogger API",
 		"uri", apiURI,

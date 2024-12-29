@@ -51,7 +51,7 @@ func GetEndpointWithContext(ctx context.Context, endpoint string) (*http.Respons
 
 // Wrapped Get for standardized call of API GET endpoints.
 func APIGet(endpoint string) ([]byte, error) {
-	var ctx context.Context
+	ctx := context.Background()
 
 	apiResponse, err := GetEndpointWithContext(ctx, endpoint)
 	if err != nil {
@@ -105,10 +105,9 @@ func PostFormEndpointWithContext(ctx context.Context, endpoint string, data url.
 
 // Wrapped PostForm for standardized call of API POST endpoints.
 func APIPostForm(endpoint string, data url.Values) (PostResponse, error) {
-	var (
-		ctx      context.Context
-		response PostResponse
-	)
+	var response PostResponse
+
+	ctx := context.Background()
 
 	apiResponse, err := PostFormEndpointWithContext(ctx, endpoint, data)
 	if err != nil {
