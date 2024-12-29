@@ -17,11 +17,15 @@ var (
 	logLevel *slog.LevelVar
 )
 
-func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.CSV) error {
-	slog.Debug("Synching fillups")
+func rtfComparator(f roadtrip.FuelRecord) string {
+	return fmt.Sprintf("%07d", int64(f.Odometer))
+}
+
+func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.Vehicle) error {
+	logger.Debug("Synching fillups")
 
 	var (
-		rtInsertQueue []roadtrip.Fuel
+		rtInsertQueue []roadtrip.FuelRecord
 		llInsertQueue []lubelogger.GasRecord
 	)
 
@@ -31,11 +35,11 @@ func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.CSV) error {
 	}
 
 	for i, rtf := range rt.FuelRecords {
-		rtComparator := rtf.Comparator()
+		rtComparator := rtfComparator(rtf)
 
 		gr, err := llGasRecords.FindGasRecord(rtComparator)
 		if err != nil {
-			slog.Error("FindGasRecord failed",
+			logger.Error("FindGasRecord failed",
 				"error", err,
 			)
 			break
@@ -44,14 +48,14 @@ func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.CSV) error {
 		llComparator := gr.Comparator()
 
 		if llComparator == rtComparator {
-			slog.Debug("RT Fillup found in LubeLogger",
+			logger.Debug("RT Fillup found in LubeLogger",
 				"rtIndex", i,
 				"comparator", rtComparator,
 				"llOdometer", gr.Odometer,
 			)
 
 		} else {
-			slog.Debug("RT Fillup not in LubeLogger, Enqueing",
+			logger.Debug("RT Fillup not in LubeLogger, Enqueing",
 				"rtIndex", i,
 				"comparator", rtComparator,
 			)
@@ -59,33 +63,33 @@ func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.CSV) error {
 		}
 	}
 
-	slog.Info("Missing Fuel records enqueued",
+	logger.Info("Missing Fuel records enqueued",
 		"rtCount", len(rtInsertQueue),
 		"llCount", len(llInsertQueue),
 	)
 
 	for i, e := range rtInsertQueue {
-		slog.Debug("Adding Road Trip Fillup to LubeLogger",
+		logger.Debug("Adding Road Trip Fillup to LubeLogger",
 			"index", i,
 			"fuelEntry", e,
 		)
 
 		gr, err := TransformRoadTripFuelToLubeLogger(e)
 		if err != nil {
-			slog.Error("Failed Adding Road Trip Fillup to LubeLogger", "error", err)
+			logger.Error("Failed Adding Road Trip Fillup to LubeLogger", "error", err)
 			break
 		}
 
 		response, err := lubelogger.AddGasRecord(v.ID, gr)
 		if err != nil {
-			slog.Error("Failed Adding Road Trip Fillup to LubeLogger",
+			logger.Error("Failed Adding Road Trip Fillup to LubeLogger",
 				"index", i,
 				"fuelEntry", e,
 				"error", err,
 			)
 			break
 		}
-		slog.Info("Added Road Trip Fillup to LubeLogger",
+		logger.Info("Added Road Trip Fillup to LubeLogger",
 			"index", i,
 			"fuelEntry", e,
 			"success", response.Success,
@@ -96,9 +100,12 @@ func SyncGasRecords(v lubelogger.Vehicle, rt roadtrip.CSV) error {
 	return nil
 }
 
-func TransformRoadTripFuelToLubeLogger(rtf roadtrip.Fuel) (lubelogger.GasRecord, error) {
+func TransformRoadTripFuelToLubeLogger(rtf roadtrip.FuelRecord) (lubelogger.GasRecord, error) {
 	gr := lubelogger.GasRecord{}
-	date := roadtrip.ParseDate(rtf.Date)
+	date, err := rtf.Date.MustParse()
+	if err != nil {
+		return lubelogger.GasRecord{}, err
+	}
 
 	gr.Date = lubelogger.FormatDate(date)
 	gr.Odometer = fmt.Sprintf("%d", int(rtf.Odometer))
@@ -166,22 +173,22 @@ func main() {
 
 	vehicles, err := lubelogger.Vehicles()
 	if err != nil {
-		slog.Error("Error loading lubelogger Vehicles", "error", err)
+		logger.Error("Error loading lubelogger Vehicles", "error", err)
 		os.Exit(1)
 	}
 
 	for _, v := range vehicles {
 		filename := v.CSVFilename()
 
-		slog.Info("Evaluating lubelogger vehicle",
+		logger.Info("Evaluating lubelogger vehicle",
 			"roadTripCSV", filename,
 		)
 
 		if filename != "" {
-			rt, err := roadtrip.NewFromFile(filepath.Join(*roadtripCSVPath, filename))
+			rt, err := roadtrip.NewVehicleFromFile(filepath.Join(*roadtripCSVPath, filename), options)
 
 			if err != nil {
-				slog.Error("Error loading vehicle",
+				logger.Error("Error loading vehicle",
 					"filename", filename,
 					"error", err,
 				)
@@ -190,7 +197,7 @@ func main() {
 
 			err = SyncGasRecords(v, rt)
 			if err != nil {
-				slog.Error("Error synching fuel records",
+				logger.Error("Error synching fuel records",
 					"error", err,
 				)
 				break

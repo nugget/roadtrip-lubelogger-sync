@@ -2,6 +2,11 @@ BINARYNAME=rt2ll
 
 DATADIR=./testdata
 
+moduleupdate:
+	 go get -u github.com/nugget/roadtrip-go/roadtrip
+	 go mod tidy
+	 git commit go.mod go.sum -m "make moduleupdate"
+
 fetchdata:
 	curl --output $(DATADIR)/dropbox.zip --location "https://www.dropbox.com/scl/fo/bhu66tpp1f1rbth9ry855/AGfHN9BGzzypwMcDtlySXQc?rlkey=66a2wjdthk9v9gvouw1kmb14f&st=17g3t3vx&dl=0"
 	cd $(DATADIR) && unzip -o dropbox.zip
