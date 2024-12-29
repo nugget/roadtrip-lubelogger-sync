@@ -16,6 +16,9 @@ import (
 var (
 	logger   *slog.Logger
 	logLevel *slog.LevelVar
+
+	apiURI        string = "https://lubelogger.example.com/api"
+	authorization string = "Basic BASIC_AUTH_TOKEN_GOES_HERE"
 )
 
 func rtfComparator(f roadtrip.FuelRecord) string {
