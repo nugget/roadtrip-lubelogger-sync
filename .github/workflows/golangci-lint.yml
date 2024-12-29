@@ -20,13 +20,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: stable
-      - name: golangci-lint on roadtrip package
+      - name: golangci-lint 
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.62.2
-          working-directory: roadtrip
-      - name: golangci-lint on vehiclestats example
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: v1.62.2
-          working-directory: examples/vehiclestats
