@@ -154,6 +154,11 @@ func setupSecrets() (string, string) {
 	apiURI := os.Getenv("API_URI")
 	authorization := os.Getenv("AUTHORIZATION")
 
+	if apiURI == "" || authorization == "" {
+		logger.Error("Missing API_URI or AUTHORIZATION environment variables")
+		os.Exit(1)
+	}
+
 	return apiURI, authorization
 }
 
