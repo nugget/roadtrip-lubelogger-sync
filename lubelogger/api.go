@@ -25,7 +25,7 @@ func authorizationHeader() string {
 func GetEndpointWithContext(ctx context.Context, endpoint string) (*http.Response, error) {
 	requestURL := endpointURL(endpoint)
 
-	logger.DebugContext(ctx, "GetEndpoint called",
+	logger.DebugContext(ctx, "GetEndpointWithContext called",
 		"endpoint", endpoint,
 		"url", requestURL,
 	)
@@ -38,12 +38,21 @@ func GetEndpointWithContext(ctx context.Context, endpoint string) (*http.Respons
 	apiRequest.Header.Add("Authorization", authorizationHeader())
 
 	apiResponse, err := http.DefaultClient.Do(apiRequest)
+	if err != nil {
+		return nil, fmt.Errorf("GetEndpointWithContext Do: %w", err)
+	}
 
 	logger.DebugContext(ctx, "GetEndpointWithContext apiResponse",
 		"endpoint", endpoint,
 		"statusCode", apiResponse.StatusCode,
-		"proto", apiResponse.Proto,
+		// "proto", apiResponse.Proto,
 		"contentLength", apiResponse.ContentLength,
+		"body", apiResponse.Body,
+		// "close", apiResponse.Close,
+		// "header", apiResponse.Header,
+		// "trailer", apiResponse.Trailer,
+		// "request", apiResponse.Request,
+		// "tls", apiResponse.TLS,
 	)
 
 	return apiResponse, err
@@ -66,7 +75,10 @@ func APIGet(endpoint string) ([]byte, error) {
 
 	logger.DebugContext(ctx, "LubeLogger APIGet",
 		"responseBytes", len(responseBody),
+		// "responseBody", responseBody,
 	)
+
+	// fmt.Printf("%s\n", responseBody)
 
 	return responseBody, nil
 }
