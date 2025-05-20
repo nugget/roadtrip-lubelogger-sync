@@ -38,7 +38,7 @@ type Vehicle struct {
 	HasOdometerAdjustment bool         `json:"hasOdometerAdjustment"`
 	OdometerMultiplier    string       `json:"odometerMultiplier"`
 	OdometerDifference    string       `json:"odometerDifference"`
-	DashboardMetrics      []string     `json:"dashboardMetrics"`
+	DashboardMetrics      []int        `json:"dashboardMetrics"`
 	VehicleIdentifier     string       `json:"vehicleIdentifier"`
 }
 
