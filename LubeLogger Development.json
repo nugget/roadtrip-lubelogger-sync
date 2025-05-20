@@ -1,0 +1,364 @@
+{
+    "New item - 2": [
+        {
+            "id": 1,
+            "imageLocation": "/images/205c082d-6e8f-406e-be47-6dfb9abb60a6.JPG",
+            "year": 2007,
+            "make": "Porsche",
+            "model": "GT3 RS",
+            "licensePlate": "NUGGET",
+            "purchaseDate": "08/31/2009",
+            "soldDate": null,
+            "purchasePrice": 112500,
+            "soldPrice": 0,
+            "isElectric": false,
+            "isDiesel": false,
+            "useHours": false,
+            "odometerOptional": false,
+            "extraFields": [
+                {
+                    "name": "Road Trip CSV",
+                    "value": "2007 GT3 RS.csv",
+                    "isRequired": false,
+                    "fieldType": 0
+                },
+                {
+                    "name": "VIN",
+                    "value": "WPOAC299278792837",
+                    "isRequired": false,
+                    "fieldType": 0
+                }
+            ],
+            "tags": [
+            ],
+            "hasOdometerAdjustment": false,
+            "odometerMultiplier": "1",
+            "odometerDifference": "0",
+            "dashboardMetrics": [
+                0
+            ],
+            "vehicleIdentifier": "LicensePlate"
+        },
+        {
+            "id": 2,
+            "imageLocation": "/images/cfa792ef-4c70-418a-b546-7f0c12951daa.jpg",
+            "year": 2004,
+            "make": "Porsche",
+            "model": "GT3",
+            "licensePlate": "GTWHEE",
+            "purchaseDate": "02/02/2023",
+            "soldDate": null,
+            "purchasePrice": 110000,
+            "soldPrice": 0,
+            "isElectric": false,
+            "isDiesel": false,
+            "useHours": false,
+            "odometerOptional": false,
+            "extraFields": [
+                {
+                    "name": "Road Trip CSV",
+                    "value": "2004 GT3.csv",
+                    "isRequired": false,
+                    "fieldType": 0
+                },
+                {
+                    "name": "VIN",
+                    "value": "WP0AC29914S692594",
+                    "isRequired": false,
+                    "fieldType": 0
+                }
+            ],
+            "tags": [
+            ],
+            "hasOdometerAdjustment": false,
+            "odometerMultiplier": "1",
+            "odometerDifference": "0",
+            "dashboardMetrics": [
+                0
+            ],
+            "vehicleIdentifier": "LicensePlate"
+        },
+        {
+            "id": 3,
+            "imageLocation": "/images/e2e1195a-7a54-4820-ac38-8040a6c110a8.jpeg",
+            "year": 2024,
+            "make": "Ford",
+            "model": "F350",
+            "licensePlate": "TUG LIFE",
+            "purchaseDate": "06/13/2024",
+            "soldDate": null,
+            "purchasePrice": 99704,
+            "soldPrice": 0,
+            "isElectric": false,
+            "isDiesel": true,
+            "useHours": false,
+            "odometerOptional": false,
+            "extraFields": [
+                {
+                    "name": "Road Trip CSV",
+                    "value": "2024 F350.csv",
+                    "isRequired": false,
+                    "fieldType": 0
+                }
+            ],
+            "tags": [
+            ],
+            "hasOdometerAdjustment": false,
+            "odometerMultiplier": "1",
+            "odometerDifference": "0",
+            "dashboardMetrics": [
+                0
+            ],
+            "vehicleIdentifier": "LicensePlate"
+        },
+        {
+            "id": 4,
+            "imageLocation": "/images/bdc7de93-895f-4f72-a146-b598f0eb01a5.jpeg",
+            "year": 2022,
+            "make": "Ferrari",
+            "model": "Portofino M",
+            "licensePlate": "MIGLIA",
+            "purchaseDate": "01/30/2023",
+            "soldDate": null,
+            "purchasePrice": 355334.00,
+            "soldPrice": 0,
+            "isElectric": false,
+            "isDiesel": false,
+            "useHours": false,
+            "odometerOptional": false,
+            "extraFields": [
+                {
+                    "name": "Road Trip CSV",
+                    "value": "2022 Portofino M.csv",
+                    "isRequired": false,
+                    "fieldType": 0
+                },
+                {
+                    "name": "VIN",
+                    "value": "ZFF02RPA2N0285791",
+                    "isRequired": false,
+                    "fieldType": 0
+                }
+            ],
+            "tags": [
+            ],
+            "hasOdometerAdjustment": false,
+            "odometerMultiplier": "1",
+            "odometerDifference": "0",
+            "dashboardMetrics": [
+                0
+            ],
+            "vehicleIdentifier": "LicensePlate"
+        },
+        {
+            "id": 5,
+            "imageLocation": "/images/57d448e5-380c-48c7-9e6d-9c9651f6120c.JPG",
+            "year": 2015,
+            "make": "Porsche",
+            "model": "Cayenne Diesel",
+            "licensePlate": "DZT7092",
+            "purchaseDate": null,
+            "soldDate": null,
+            "purchasePrice": 0,
+            "soldPrice": 0,
+            "isElectric": false,
+            "isDiesel": true,
+            "useHours": false,
+            "odometerOptional": false,
+            "extraFields": [
+                {
+                    "name": "Road Trip CSV",
+                    "value": "2015 Cayenne Diesel.csv",
+                    "isRequired": false,
+                    "fieldType": 0
+                },
+                {
+                    "name": "VIN",
+                    "value": "WP1AF2A27FLA31220",
+                    "isRequired": false,
+                    "fieldType": 0
+                }
+            ],
+            "tags": [
+            ],
+            "hasOdometerAdjustment": false,
+            "odometerMultiplier": "1",
+            "odometerDifference": "0",
+            "dashboardMetrics": [
+                0
+            ],
+            "vehicleIdentifier": "LicensePlate"
+        },
+        {
+            "id": 6,
+            "imageLocation": "/images/31808650-65dc-41a1-b184-df5e53229759.jpeg",
+            "year": 1960,
+            "make": "Austin Healey",
+            "model": "Sprite",
+            "licensePlate": "JB856",
+            "purchaseDate": null,
+            "soldDate": null,
+            "purchasePrice": 0,
+            "soldPrice": 0,
+            "isElectric": false,
+            "isDiesel": false,
+            "useHours": false,
+            "odometerOptional": false,
+            "extraFields": [
+                {
+                    "name": "Road Trip CSV",
+                    "value": "1960 Bugeye Sprite.csv",
+                    "isRequired": false,
+                    "fieldType": 0
+                }
+            ],
+            "tags": [
+            ],
+            "hasOdometerAdjustment": false,
+            "odometerMultiplier": "1",
+            "odometerDifference": "0",
+            "dashboardMetrics": [
+                0
+            ],
+            "vehicleIdentifier": "LicensePlate"
+        },
+        {
+            "id": 7,
+            "imageLocation": "/images/b7ec09a3-6188-427f-abd7-a923eaba22c4.JPG",
+            "year": 2006,
+            "make": "Mazda",
+            "model": "MX-5 Miata",
+            "licensePlate": "HDN2700",
+            "purchaseDate": null,
+            "soldDate": null,
+            "purchasePrice": 0,
+            "soldPrice": 0,
+            "isElectric": false,
+            "isDiesel": false,
+            "useHours": false,
+            "odometerOptional": false,
+            "extraFields": [
+                {
+                    "name": "Road Trip CSV",
+                    "value": "2006 Mazda MX-5.csv",
+                    "isRequired": false,
+                    "fieldType": 0
+                }
+            ],
+            "tags": [
+            ],
+            "hasOdometerAdjustment": false,
+            "odometerMultiplier": "1",
+            "odometerDifference": "0",
+            "dashboardMetrics": [
+                0
+            ],
+            "vehicleIdentifier": "LicensePlate"
+        },
+        {
+            "id": 8,
+            "imageLocation": "/images/1682d713-ffa8-4639-b801-6fee1fb43558.png",
+            "year": 2017,
+            "make": "Mazda",
+            "model": "MX-5 Miata RF",
+            "licensePlate": "CRSTNE3",
+            "purchaseDate": null,
+            "soldDate": null,
+            "purchasePrice": 0,
+            "soldPrice": 0,
+            "isElectric": false,
+            "isDiesel": false,
+            "useHours": false,
+            "odometerOptional": false,
+            "extraFields": [
+                {
+                    "name": "Road Trip CSV",
+                    "value": "2017 Miata RF.csv",
+                    "isRequired": false,
+                    "fieldType": 0
+                }
+            ],
+            "tags": [
+            ],
+            "hasOdometerAdjustment": false,
+            "odometerMultiplier": "1",
+            "odometerDifference": "0",
+            "dashboardMetrics": [
+                0
+            ],
+            "vehicleIdentifier": "LicensePlate"
+        },
+        {
+            "id": 9,
+            "imageLocation": "/defaults/noimage.png",
+            "year": 2018,
+            "make": "Chevrolet",
+            "model": "Colorado",
+            "licensePlate": "RYB9185",
+            "purchaseDate": "07/19/2022",
+            "soldDate": null,
+            "purchasePrice": 30990,
+            "soldPrice": 0,
+            "isElectric": false,
+            "isDiesel": false,
+            "useHours": false,
+            "odometerOptional": false,
+            "extraFields": [
+                {
+                    "name": "VIN",
+                    "value": "AGCHSCENXJ1169442",
+                    "isRequired": false,
+                    "fieldType": 0
+                }
+            ],
+            "tags": [
+            ],
+            "hasOdometerAdjustment": false,
+            "odometerMultiplier": "1",
+            "odometerDifference": "0",
+            "dashboardMetrics": [
+                0
+            ],
+            "vehicleIdentifier": "LicensePlate"
+        },
+        {
+            "id": 10,
+            "imageLocation": "/images/c61afd31-d47a-4358-b2f7-a732028cb2af.jpg",
+            "year": 2025,
+            "make": "Mazda",
+            "model": "Miata RF",
+            "licensePlate": "DLR",
+            "purchaseDate": "04/26/2025",
+            "soldDate": null,
+            "purchasePrice": 41108,
+            "soldPrice": 0,
+            "isElectric": false,
+            "isDiesel": false,
+            "useHours": false,
+            "odometerOptional": false,
+            "extraFields": [
+                {
+                    "name": "Road Trip CSV",
+                    "value": "2025 Miata RF.csv",
+                    "isRequired": false,
+                    "fieldType": 0
+                },
+                {
+                    "name": "VIN",
+                    "value": "JM1NDAL73S0650016",
+                    "isRequired": false,
+                    "fieldType": 0
+                }
+            ],
+            "tags": [
+            ],
+            "hasOdometerAdjustment": false,
+            "odometerMultiplier": "1",
+            "odometerDifference": "0",
+            "dashboardMetrics": [
+                0
+            ],
+            "vehicleIdentifier": "LicensePlate"
+        }
+    ]
+}
