@@ -168,10 +168,10 @@ func main() {
 		debugMode       = flag.Bool("v", false, "Verbose logging")
 	)
 
-	apiURI, authorization := setupSecrets()
-
 	setupLogs()
 	flag.Parse()
+
+	apiURI, authorization := setupSecrets()
 
 	options := roadtrip.VehicleOptions{
 		Logger: logger,
