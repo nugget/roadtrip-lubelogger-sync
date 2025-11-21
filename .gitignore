@@ -1,4 +1,5 @@
 .DS_Store
 testdata
 secrets.fish
+secrets.json
 dist

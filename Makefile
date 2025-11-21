@@ -21,6 +21,10 @@ productiondev:
 	go mod edit -dropreplace=github.com/nugget/roadtrip-go/roadtrip
 	go mod tidy
 
+secrets:
+	mkdir -p $(HOME)/.local/rt2ll
+	cp -rp secrets.json $(HOME)/.local/rt2ll/rt2ll.json
+
 testrun: 
 	clearbuffer && go mod tidy && go build -o dist/$(BINARYNAME)
 	./dist/$(BINARYNAME) -v
@@ -31,6 +35,8 @@ linux: productiondev
 prod: productiondev linux
 	scp -rp dist/$(BINARYNAME)-linux-amd64 $(PRODUCTION_HOST):.local/bin/
 
+prodsecrets:
+	scp -rp $(HOME)/.local/rt2ll $(PRODUCTION_HOST):.local/
 
 prodrun: prod
 	ssh roadtrip-sync ".local/bin/rt2ll-linux-amd64 -csvpath \"/home/nugget/Dropbox/Road Trip Data/CSV\""

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -155,8 +156,46 @@ func setupSecrets() (string, string) {
 	authorization := os.Getenv("AUTHORIZATION")
 
 	if apiURI == "" || authorization == "" {
-		logger.Error("Missing API_URI or AUTHORIZATION environment variables")
-		os.Exit(1)
+		logger.Warn("Missing API_URI or AUTHORIZATION environment variables")
+
+		type Config struct {
+			ApiURI        string
+			Authorization string
+		}
+
+		configFileName := fmt.Sprintf("%s/.local/rt2ll/rt2ll.json", os.Getenv("HOME"))
+		configFile, err := os.Open(configFileName)
+		if err != nil {
+			logger.Error("Error reading config file",
+				"filename", configFileName,
+				"error", err,
+			)
+			os.Exit(1)
+		}
+
+		defer configFile.Close()
+
+		decoder := json.NewDecoder(configFile)
+		c := Config{}
+
+		err = decoder.Decode(&c)
+		if err != nil {
+			logger.Error("Error decoding config file",
+				"filename", configFileName,
+				"error", err,
+			)
+			os.Exit(1)
+		}
+
+		fmt.Printf("c: %+v\n", c)
+
+		apiURI = c.ApiURI
+		authorization = c.Authorization
+
+		if apiURI == "" || authorization == "" {
+			logger.Error("No configuration found in file")
+			os.Exit(1)
+		}
 	}
 
 	return apiURI, authorization
