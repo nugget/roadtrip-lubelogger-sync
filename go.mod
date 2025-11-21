@@ -9,5 +9,5 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/tiendc/go-csvlib v1.0.0 // indirect
 	github.com/tiendc/go-rflutil v0.0.0-20240919184510-8a396d31868e // indirect
-	github.com/tiendc/gofn v1.14.0 // indirect
+	github.com/tiendc/gofn v1.15.0 // indirect
 )

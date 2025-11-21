@@ -9,13 +9,13 @@ github.com/nugget/roadtrip-go/roadtrip v0.0.0-20241230045806-3624d746ab38 h1:9K3
 github.com/nugget/roadtrip-go/roadtrip v0.0.0-20241230045806-3624d746ab38/go.mod h1:wiC7U7pYaY5bll/aNkxlIbJ9GFTGbk1K3k//YJw9r7A=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsTg=
-github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
+github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
+github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
 github.com/tiendc/go-csvlib v1.0.0 h1:8jz6zKY617KvYE24xUzl/KLG1C1ni/tDN6nosO2DWrQ=
 github.com/tiendc/go-csvlib v1.0.0/go.mod h1:8zM3bjEHozZA/CUFi8OpAMlowPBKfVx7qqyLDfZjSkA=
 github.com/tiendc/go-rflutil v0.0.0-20240919184510-8a396d31868e h1:fEy3KtoperpwQw/L+6VX9N2qsysyhA+QDPiQdfu5LYA=
 github.com/tiendc/go-rflutil v0.0.0-20240919184510-8a396d31868e/go.mod h1:2nPnVtlbM4w4GOWSmFjKFKl+mhDT7hWgwky4qpRFugo=
-github.com/tiendc/gofn v1.14.0 h1:2djOJ5TUKCBlINiF8Nnh85dDhDNfu5TTFar6jyI0/s0=
-github.com/tiendc/gofn v1.14.0/go.mod h1:SfEJjjn7b4WMW2PRoxKuBXGDCWuxnD8DfxJccBlx+4o=
+github.com/tiendc/gofn v1.15.0 h1:WYdPmO5BHmHZb+ZiDdq2m66yzo0B6N4CCFL4IuX/6f4=
+github.com/tiendc/gofn v1.15.0/go.mod h1:WCV4ZLqVxNoxtg99ESisK6d2g+NVLM3ZPc4MVrzw+8o=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
