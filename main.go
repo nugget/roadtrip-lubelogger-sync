@@ -238,7 +238,7 @@ func main() {
 		"vehicleCount", len(vehicles),
 	)
 
-	for i, v := range vehicles {
+	for _, v := range vehicles {
 		filename := v.CSVFilename()
 
 		logger.Info("Evaluating lubelogger vehicle",
