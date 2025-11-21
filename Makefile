@@ -12,6 +12,7 @@ mod:
 fetchdata:
 	@echo "Fetching current Dropbox files from $(PRODUCTION_HOST)"
 	rsync -auz "$(PRODUCTION_HOST):Dropbox/Road\ Trip\ Data/*" "$(DATADIR)"
+	ls -la "$(DATADIR)/CSV"
 
 localdev:
 	go mod edit -replace=github.com/nugget/roadtrip-go/roadtrip="/Users/nugget/src/Vehicle Fleet/roadtrip-go/roadtrip"
