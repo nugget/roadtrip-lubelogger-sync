@@ -27,7 +27,7 @@ secrets:
 	cp -rp secrets.json $(HOME)/.local/rt2ll/rt2ll.json
 
 testrun: 
-	clearbuffer && go mod tidy && go build -o dist/$(BINARYNAME)
+	go mod tidy && go build -o dist/$(BINARYNAME)
 	./dist/$(BINARYNAME) -v
 
 linux: productiondev

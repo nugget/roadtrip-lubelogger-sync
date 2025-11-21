@@ -234,10 +234,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	for _, v := range vehicles {
+	logger.Info("Loaded Vehicles from LubeLogger API",
+		"vehicleCount", len(vehicles),
+	)
+
+	for i, v := range vehicles {
 		filename := v.CSVFilename()
 
 		logger.Info("Evaluating lubelogger vehicle",
+			"id", v.ID,
+			"year", v.Year,
+			"make", v.Make,
+			"model", v.Model,
 			"filename", filename,
 		)
 
